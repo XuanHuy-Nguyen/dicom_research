@@ -18,5 +18,6 @@ services:
       - ./config/dicomweb.json:/etc/orthanc/dicomweb.json:ro
       - ./python_plugin/handle_store.py:/etc/orthanc/python_plugin.py:ro
       - ./orthanc_data:/var/lib/orthanc/db
+      - ./parse_data:/var/lib/orthanc/parse_data
     environment:
       - ORTHANC_NAME=HelloWorld
