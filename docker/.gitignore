@@ -1,0 +1,5 @@
+# exclude everything in orthanc_data
+orthanc_data/*
+
+# keep one file to keep the folder
+!orthanc_data/keepgit.txt
