@@ -1,2 +1,8 @@
 .idea
 venv
+
+# exclude everything in server_data
+server_data/*
+
+# keep one file to keep the folder
+!server_data/keepgit.txt

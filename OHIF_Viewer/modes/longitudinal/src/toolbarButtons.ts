@@ -243,6 +243,40 @@ const toolbarButtons: Button[] = [
       commands: _createSetToolActiveCommands('Zoom'),
     },
   },
+  // Download
+  {
+    id: 'Download',
+    type: 'ohif.action',
+    props: {
+      icon: 'tool-download',
+      label: 'Download',
+      type: 'action',
+      commands: [
+        {
+          commandName: 'downloadDICOM',
+          commandOptions: {},
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // Send to PACS
+  {
+    id: 'SendPacs',
+    type: 'ohif.action',
+    props: {
+      icon: 'tool-send',
+      label: 'Send to PACS',
+      type: 'action',
+      commands: [
+        {
+          commandName: 'sendToPacs',
+          commandOptions: {},
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
   // Window Level + Presets...
   {
     id: 'WindowLevel',

@@ -50,7 +50,8 @@
   "DicomAlwaysAllowMove" : false,
   "DicomCheckModalityHost" : false,
   "DicomModalities" : {
-      "MyStoreSCP" : [ "MyStoreSCP", "host.docker.internal", 11112]
+      "MyStoreSCP" : [ "MyStoreSCP", "host.docker.internal", 11112],
+	  "OrthancLocal" : [ "ORTHANC", "host.docker.internal", 4244]
   },
   "DicomModalitiesInDatabase" : false,
   "DicomEchoChecksFind" : false,

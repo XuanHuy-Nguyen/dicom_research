@@ -116,6 +116,8 @@ function modeFactory({ modeConfiguration }) {
       toolbarService.createButtonSection('primary', [
         'MeasurementTools',
         'Zoom',
+        'Download',
+        'SendPacs',
         'WindowLevel',
         'Pan',
         'Capture',

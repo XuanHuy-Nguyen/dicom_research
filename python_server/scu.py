@@ -9,7 +9,7 @@ debug_logger()
 
 ae = AE()
 ae.add_requested_context('1.2.840.10008.5.1.4.1.1.4', [ImplicitVRLittleEndian, ExplicitVRLittleEndian]) # MRImageStorage
-assoc = ae.associate("127.0.0.1", 4242)
+assoc = ae.associate(ae_title="SGM", addr="127.0.0.1", port=4242)
 if assoc.is_established:
     print('Association established with Echo SCP!')
 

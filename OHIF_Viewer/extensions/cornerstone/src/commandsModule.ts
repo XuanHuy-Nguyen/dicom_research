@@ -26,6 +26,7 @@ function commandsModule({
   const {
     viewportGridService,
     toolGroupService,
+    displaySetService,
     cineService,
     toolbarService,
     uiDialogService,
@@ -383,6 +384,92 @@ function commandsModule({
         });
       }
     },
+    downloadDICOM: async () => {
+      const patientId = displaySetService.activeDisplaySets[0]?.instance?.PatientID;
+      const currentStudyID = displaySetService.activeDisplaySets[0]?.instance?.StudyInstanceUID;
+      console.log('patientId', patientId);
+      console.log('currentStudyID', currentStudyID);
+      if (patientId && currentStudyID) {
+        const response = await fetch("http://localhost:8899/tools/find", {
+          method: "POST",
+          body: JSON.stringify({
+            "Level": "Study",
+            "Expand": true,
+            "Limit": 101,
+            "Query": { "StudyDate": "", "PatientID": patientId },
+            "Full": true
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        });
+
+        const studies = await response.json();
+        console.log('studies', studies);
+
+        // (0020,000d): StudyInstanceUID. Query by Patient ID => Need to compare the studyID again
+        if (studies && studies.length > 0 && studies[0].ID && studies[0]?.MainDicomTags['0020,000d']?.Value === currentStudyID) {
+          const orthancStudyId = studies[0].ID;
+          const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
+
+          // Download
+          const download_response = await fetch(`http://localhost:8899/studies/${orthancStudyId}/archive`);
+          const blob = await download_response.blob();
+
+          // Pseudo click download
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${patientName}_${orthancStudyId}.zip`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }
+    },
+    sendToPacs: async () => {
+      const patientId = displaySetService.activeDisplaySets[0]?.instance?.PatientID;
+      const currentStudyID = displaySetService.activeDisplaySets[0]?.instance?.StudyInstanceUID;
+      console.log('patientId', patientId);
+      console.log('currentStudyID', currentStudyID);
+      if (patientId && currentStudyID) {
+        const response = await fetch("http://localhost:8899/tools/find", {
+          method: "POST",
+          body: JSON.stringify({
+            "Level": "Study",
+            "Expand": true,
+            "Limit": 101,
+            "Query": { "StudyDate": "", "PatientID": patientId },
+            "Full": true
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        });
+
+        const studies = await response.json();
+        console.log('studies', studies);
+
+        // (0020,000d): StudyInstanceUID. Query by Patient ID => Need to compare the studyID again
+        if (studies && studies.length > 0 && studies[0].ID && studies[0]?.MainDicomTags['0020,000d']?.Value === currentStudyID) {
+          const orthancStudyId = studies[0].ID;
+          const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
+
+          // Send
+          const response = await fetch("http://localhost:8899/modalities/MyStoreSCP/store", {
+            method: "POST",
+            body: JSON.stringify({
+              "Synchronous": false,
+              "Resources": [orthancStudyId]
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          });
+          const sendRes = await response.json();
+          console.log('send response', sendRes);
+        }
+      }
+    },
     rotateViewport: ({ rotation }) => {
       const enabledElement = _getActiveViewportEnabledElement();
       if (!enabledElement) {
@@ -691,6 +778,12 @@ function commandsModule({
     },
     showDownloadViewportModal: {
       commandFn: actions.showDownloadViewportModal,
+    },
+    downloadDICOM: {
+      commandFn: actions.downloadDICOM,
+    },
+    sendToPacs: {
+      commandFn: actions.sendToPacs,
     },
     toggleCine: {
       commandFn: actions.toggleCine,
