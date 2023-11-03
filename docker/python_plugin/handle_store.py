@@ -15,8 +15,6 @@ def OnStoredInstance(dicom, instanceId):
         dicom.GetInstanceMetadata('TransferSyntax'),
         dicom.GetInstanceMetadata('SopClassUid')))
         
-    sopInstanceUid = dicom.GetInstanceMetadata('SOPInstanceUID')
-
     # Print the origin information
     if dicom.GetInstanceOrigin() == orthanc.InstanceOrigin.DICOM_PROTOCOL:
         print('This instance was received through the DICOM protocol')
@@ -138,7 +136,21 @@ def OnStoredInstance(dicom, instanceId):
     f = orthanc.GetDicomForInstance(instanceId)
     # Parse it using pydicom
     dicom_content = pydicom.dcmread(io.BytesIO(f))
-    dicom_content.save_as(dcm_path + "/" + str(sopInstanceUid) + ".dcm", write_like_original=False)
+    patient_file = pt_name + "_" + pt_id
+    patient_file_format = ''.join(e for e in patient_file if e.isalnum())
+    dicom_content.save_as(dcm_path + "/" + patient_file_format + ".dcm", write_like_original=False)
+    
+    
+    # Save PNG
+    # Render the instance, then open it in Python using PIL/Pillow
+    png = orthanc.RestApiGet('/instances/%s/rendered' % instanceId)
+    output_file = png_path + "/" + patient_file_format + ".png"
+    
+    # Save the response content (rendered image) to a file
+    with open(output_file, "wb") as file:
+        file.write(png)
+    print(f"Rendered image saved as {output_file}")
+    
 
 
     
