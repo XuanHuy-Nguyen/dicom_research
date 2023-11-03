@@ -1,5 +1,7 @@
 # exclude everything in orthanc_data
-orthanc_data/*
+orthanc_db/*
+parse_data/*
 
 # keep one file to keep the folder
 !orthanc_data/keepgit.txt
+!parse_data/keepgit.txt

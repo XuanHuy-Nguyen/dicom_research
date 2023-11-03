@@ -1,8 +1,10 @@
 import orthanc
 import json
 import os
+import io
 import pprint
 import csv
+# from PIL import Image
 import pydicom
 
 def OnStoredInstance(dicom, instanceId):
@@ -12,6 +14,8 @@ def OnStoredInstance(dicom, instanceId):
         instanceId, dicom.GetInstanceSize(),
         dicom.GetInstanceMetadata('TransferSyntax'),
         dicom.GetInstanceMetadata('SopClassUid')))
+        
+    sopInstanceUid = dicom.GetInstanceMetadata('SOPInstanceUID')
 
     # Print the origin information
     if dicom.GetInstanceOrigin() == orthanc.InstanceOrigin.DICOM_PROTOCOL:
@@ -134,7 +138,7 @@ def OnStoredInstance(dicom, instanceId):
     f = orthanc.GetDicomForInstance(instanceId)
     # Parse it using pydicom
     dicom_content = pydicom.dcmread(io.BytesIO(f))
-    dicom_content.save_as(dcm_path + "/" + ds.SOPInstanceUID + ".dcm", write_like_original=False)
+    dicom_content.save_as(dcm_path + "/" + str(sopInstanceUid) + ".dcm", write_like_original=False)
 
 
     

@@ -1,4 +1,5 @@
 version: '3.1'  # Secrets are only available since this version of Docker Compose
+name: orthanc_docker
 services:
   nginx:
     image: nginx:latest
@@ -9,7 +10,9 @@ services:
       - 8899:80
       
   orthanc:
-    image: jodogne/orthanc-python:1.12.1
+    container_name: orthanc
+    build:
+        dockerfile: Dockerfile
     ports:
       - 4242:4242
       - 8042:8042
@@ -17,7 +20,7 @@ services:
       - ./config/orthanc.json:/etc/orthanc/orthanc.json:ro
       - ./config/dicomweb.json:/etc/orthanc/dicomweb.json:ro
       - ./python_plugin/handle_store.py:/etc/orthanc/python_plugin.py:ro
-      - ./orthanc_data:/var/lib/orthanc/db
+      - ./orthanc_db:/var/lib/orthanc/db
       - ./parse_data:/var/lib/orthanc/parse_data
     environment:
       - ORTHANC_NAME=HelloWorld
