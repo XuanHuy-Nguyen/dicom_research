@@ -1,9 +1,14 @@
 from flask import request, Response, app, Flask, jsonify
+from flask_cors import CORS, cross_origin
 import os
 import pydicom
 
 dicom_storage_dir = r"D:/SaigonMec/dicom_research/python_server/server_data/"
 app = Flask(__name__)
+
+RETURN_LIST_FIELDS = ["00080005", "00080020", "00080030", "00080050", "00080060", "00080061", "00080090", "00081030", "00081190",
+                      "00100010", "00100020", "00100030", "00100040", "0020000D", "00200010", "00201206", "00201208"]
+
 
 @app.route('/dicom-web/stow', methods=['POST'])
 def stow_rs():
@@ -40,68 +45,46 @@ def wado_rs():
 
     return Response(status=404)
 
+
 @app.route('/dicom-web/studies', methods=['GET'])
+@cross_origin(origin='*')
 def qido_rs():
-    # Extract query parameters from the URL
-    study_instance_uid = request.args.get('StudyInstanceUID')
-    patient_id = request.args.get('PatientID')
-
-    # Perform the query based on the provided parameters
-    results = perform_qido_query(study_instance_uid, patient_id)
-
-    if results:
-        # Construct the JSON response based on the query results
-        json_response = []
-        for result in results:
-            dicom_dataset = pydicom.dcmread(result['file_path'])
+    json_response = []
+    for root, dirs, files in os.walk(dicom_storage_dir):
+        for filename in files:
+            if not filename.endswith('dcm'):
+                continue
+            filepath = os.path.join(root, filename)
+            dicom_dataset = pydicom.dcmread(filepath)
             dicom_attributes = {}
 
             for element in dicom_dataset:
                 tag = str(element.tag)
+                tag_string = f"{element.tag.group:04X}{element.tag.elem:04X}"
                 value = element.value
                 vr = element.VR
-                # Convert MultiValue objects to Python lists
-                if isinstance(value, pydicom.multival.MultiValue):
-                    value = list(value)
 
-                # Ignore PersonName type
-                if vr is "PN" and (not isinstance(value, str)):
-                    continue
-                # Ignore PersonName type
-                if isinstance(value, pydicom.Dataset) or isinstance(value, bytes) or vr is'SQ':
-                    continue
-                dicom_attributes[tag] = {
-                    "Value": value,
-                    "vr": vr
-                }
+                if tag_string in RETURN_LIST_FIELDS:
+                    # Convert MultiValue objects to Python lists
+                    # if isinstance(value, pydicom.multival.MultiValue):
+                    #     value = list(value)
+
+                    # Check PersonName type
+                    if vr == "PN":
+                        value = {
+                            "Alphabetic": value.alphabetic
+                        }
+
+                    dicom_attributes[tag_string] = {
+                        "Value": [value],
+                        "vr": vr
+                    }
 
             json_response.append(dicom_attributes)
 
         return jsonify(json_response)
     else:
         return Response(status=404)
-
-
-def perform_qido_query(study_instance_uid, patient_id):
-    # Initialize an empty list to store the query results
-    query_results = []
-
-    # Iterate over stored DICOM instances and apply the query criteria
-    for root, dirs, files in os.walk(dicom_storage_dir):
-        for filename in files:
-            filepath = os.path.join(root, filename)
-            dcm = pydicom.dcmread(filepath)
-
-            if (
-                (study_instance_uid is None or dcm.get('StudyInstanceUID') == study_instance_uid) and
-                (patient_id is None or dcm.get('PatientID') == patient_id)
-            ):
-                # DICOM instance matches the query criteria
-                query_results.append({
-                    'file_path': filepath
-                })
-
-    return query_results
 
 
 if __name__ == "__main__":
