@@ -9,8 +9,27 @@
   "LuaScripts" : [
   ],
   "Plugins" : [ 
-    "/usr/share/orthanc/plugins", "/usr/local/share/orthanc/plugins"
+    "/usr/share/orthanc/plugins", "/usr/local/share/orthanc/plugins",
+	"/home/user/orthanc-databases/BuildMySQL/libOrthancMySQLIndex.so",
+    "/home/user/orthanc-databases/BuildMySQL/libOrthancMySQLStorage.so"
   ],
+  "MySQL" : {
+    "EnableIndex" : true,
+    "EnableStorage" : true,
+    "Host" : "host.docker.internal",    // For TCP connections (notably Windows)
+    "Port" : 3306,           // For TCP connections (notably Windows)
+	"UnixSocket" : "",
+    "Database" : "orthanc",
+    "Username" : "root",
+    "Password" : "12346798",
+    "EnableSsl" : false,     // force SSL connections
+    "SslVerifyServerCertificates": true, // Verify server certificates if EnableSsl is true
+    "SslCACertificates": "",             // Path to CA certificates to validate servers
+    "Lock" : true,                       // See section about Locking
+    "MaximumConnectionRetries" : 10,     // New in release 3.0
+    "ConnectionRetryInterval" : 5,       // New in release 3.0
+    "IndexConnectionsCount" : 1          // New in release 4.0
+  },
   "PythonScript" : "/etc/orthanc/python_plugin.py",
   "PythonVerbose" : false,
   "ConcurrentJobs" : 2,
