@@ -68,6 +68,19 @@ function WorkList({
   const debouncedFilterValues = useDebounce(filterValues, 200);
   const { resultsPerPage, pageNumber, sortBy, sortDirection } = filterValues;
 
+  useEffect(() => {
+    window.addEventListener("message", handleRedirectMessage);
+    return () => window.removeEventListener("message", handleRedirectMessage);
+  }, []);
+
+  const handleRedirectMessage = (e: MessageEvent) => {
+    if (e.data.studyInstanceUIDs) {
+      console.log('handleRedirectMessage WorkList');
+      console.log('Navigate url: ', `/viewer?StudyInstanceUIDs=${e.data.studyInstanceUIDs}`);
+      navigate(`/viewer?StudyInstanceUIDs=${e.data.studyInstanceUIDs}`);
+    }
+  }
+
   /*
    * The default sort value keep the filters synchronized with runtime conditional sorting
    * Only applied if no other sorting is specified and there are less than 101 studies
@@ -324,13 +337,13 @@ function WorkList({
           seriesTableDataSource={
             seriesInStudiesMap.has(studyInstanceUid)
               ? seriesInStudiesMap.get(studyInstanceUid).map(s => {
-                  return {
-                    description: s.description || '(empty)',
-                    seriesNumber: s.seriesNumber ?? '',
-                    modality: s.modality || '',
-                    instances: s.numSeriesInstances || '',
-                  };
-                })
+                return {
+                  description: s.description || '(empty)',
+                  seriesNumber: s.seriesNumber ?? '',
+                  modality: s.modality || '',
+                  instances: s.numSeriesInstances || '',
+                };
+              })
               : []
           }
         >
@@ -358,9 +371,8 @@ function WorkList({
                   <Link
                     className={isValidMode ? '' : 'cursor-not-allowed'}
                     key={i}
-                    to={`${dataPath ? '../../' : ''}${mode.routeName}${
-                      dataPath || ''
-                    }?${query.toString()}`}
+                    to={`${dataPath ? '../../' : ''}${mode.routeName}${dataPath || ''
+                      }?${query.toString()}`}
                     onClick={event => {
                       // In case any event bubbles up for an invalid mode, prevent the navigation.
                       // For example, the event bubbles up when the icon embedded in the disabled button is clicked.
@@ -368,7 +380,7 @@ function WorkList({
                         event.preventDefault();
                       }
                     }}
-                    // to={`${mode.routeName}/dicomweb?StudyInstanceUIDs=${studyInstanceUid}`}
+                  // to={`${mode.routeName}/dicomweb?StudyInstanceUIDs=${studyInstanceUid}`}
                   >
                     {/* TODO revisit the completely rounded style of buttons used for launching a mode from the worklist later - for now use LegacyButton*/}
                     <LegacyButton
@@ -376,7 +388,7 @@ function WorkList({
                       variant={isValidMode ? 'contained' : 'disabled'}
                       disabled={!isValidMode}
                       endIcon={<Icon name="launch-arrow" />} // launch-arrow | launch-info
-                      onClick={() => {}}
+                      onClick={() => { }}
                     >
                       {t(`Modes:${mode.displayName}`)}
                     </LegacyButton>
@@ -452,25 +464,25 @@ function WorkList({
   const uploadProps =
     dicomUploadComponent && dataSource.getConfig()?.dicomUploadEnabled
       ? {
-          title: 'Upload files',
-          closeButton: true,
-          shouldCloseOnEsc: false,
-          shouldCloseOnOverlayClick: false,
-          content: dicomUploadComponent.bind(null, {
-            dataSource,
-            onComplete: () => {
-              hide();
-              onRefresh();
-            },
-            onStarted: () => {
-              show({
-                ...uploadProps,
-                // when upload starts, hide the default close button as closing the dialogue must be handled by the upload dialogue itself
-                closeButton: false,
-              });
-            },
-          }),
-        }
+        title: 'Upload files',
+        closeButton: true,
+        shouldCloseOnEsc: false,
+        shouldCloseOnOverlayClick: false,
+        content: dicomUploadComponent.bind(null, {
+          dataSource,
+          onComplete: () => {
+            hide();
+            onRefresh();
+          },
+          onStarted: () => {
+            show({
+              ...uploadProps,
+              // when upload starts, hide the default close button as closing the dialogue must be handled by the upload dialogue itself
+              closeButton: false,
+            });
+          },
+        }),
+      }
       : undefined;
 
   const { component: dataSourceConfigurationComponent } =

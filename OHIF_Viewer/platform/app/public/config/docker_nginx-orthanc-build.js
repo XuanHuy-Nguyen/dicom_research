@@ -27,23 +27,8 @@ window.config = {
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         omitQuotationForMultipartRequest: true,
-		dicomUploadEnabled: true,
+        dicomUploadEnabled: true,
       },
-    },
-    {
-      namespace: '@ohif/extension-default.dataSourcesModule.dicomjson',
-      sourceName: 'dicomjson',
-      configuration: {
-        friendlyName: 'dicom json',
-        name: 'json',
-      },
-    },
-    {
-      namespace: '@ohif/extension-default.dataSourcesModule.dicomlocal',
-      sourceName: 'dicomlocal',
-      configuration: {
-        friendlyName: 'dicom local',
-      },
-    },
+    }
   ],
 };
