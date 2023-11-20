@@ -15,6 +15,9 @@ After running, we have:
 
 After running, we have:
 - A web client: http://localhost:3000
+
+Build production:
+	yarn run build:custom
  
 ### 1.3 PACS (Pseudo hospital machine)
 We use the Orthanc window version. Download here: https://www.orthanc-server.com/download-windows.php

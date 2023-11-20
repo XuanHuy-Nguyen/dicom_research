@@ -1,6 +1,7 @@
 window.config = {
   routerBasename: '/ohif',
   showStudyList: true,
+  showBackButton: false,
   extensions: [],
   modes: [],
   // below flag is for performance reasons, but it might not work for all servers
@@ -20,6 +21,7 @@ window.config = {
       configuration: {
         friendlyName: 'Orthanc Server',
         name: 'Orthanc',
+        orthancUrl: 'http://localhost:8899',
         wadoUriRoot: 'http://localhost:8899/wado',
         qidoRoot: 'http://localhost:8899/dicom-web',
         wadoRoot: 'http://localhost:8899/dicom-web',

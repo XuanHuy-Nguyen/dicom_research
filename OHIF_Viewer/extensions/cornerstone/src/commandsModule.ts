@@ -22,6 +22,7 @@ import { CornerstoneServices } from './types';
 function commandsModule({
   servicesManager,
   commandsManager,
+  extensionManager
 }: OhifTypes.Extensions.ExtensionParams): OhifTypes.Extensions.CommandsModule {
   const {
     viewportGridService,
@@ -389,8 +390,12 @@ function commandsModule({
       const currentStudyID = displaySetService.activeDisplaySets[0]?.instance?.StudyInstanceUID;
       console.log('patientId', patientId);
       console.log('currentStudyID', currentStudyID);
-      if (patientId && currentStudyID) {
-        const response = await fetch("http://localhost:8899/tools/find", {
+
+      const dataSource = extensionManager.getActiveDataSource()[0];
+      const { orthancUrl } = dataSource.getConfig?.() || {};
+
+      if (patientId && currentStudyID && orthancUrl) {
+        const response = await fetch(`${orthancUrl}/tools/find`, {
           method: "POST",
           body: JSON.stringify({
             "Level": "Study",
@@ -413,7 +418,7 @@ function commandsModule({
           const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
 
           // Download
-          const download_response = await fetch(`http://localhost:8899/studies/${orthancStudyId}/archive`);
+          const download_response = await fetch(`${orthancUrl}/studies/${orthancStudyId}/archive`);
           const blob = await download_response.blob();
 
           // Pseudo click download
@@ -431,8 +436,12 @@ function commandsModule({
       const currentStudyID = displaySetService.activeDisplaySets[0]?.instance?.StudyInstanceUID;
       console.log('patientId', patientId);
       console.log('currentStudyID', currentStudyID);
-      if (patientId && currentStudyID) {
-        const response = await fetch("http://localhost:8899/tools/find", {
+
+      const dataSource = extensionManager.getActiveDataSource()[0];
+      const { orthancUrl } = dataSource.getConfig?.() || {};
+
+      if (patientId && currentStudyID && orthancUrl) {
+        const response = await fetch(`${orthancUrl}/tools/find`, {
           method: "POST",
           body: JSON.stringify({
             "Level": "Study",
@@ -455,7 +464,7 @@ function commandsModule({
           const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
 
           // Send
-          const response = await fetch("http://localhost:8899/modalities/MyStoreSCP/store", {
+          const response = await fetch(`${orthancUrl}/modalities/MyStoreSCP/store`, {
             method: "POST",
             body: JSON.stringify({
               "Synchronous": false,

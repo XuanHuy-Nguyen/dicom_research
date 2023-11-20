@@ -38,6 +38,7 @@ window.config = {
       configuration: {
         friendlyName: 'AWS S3 Static wado server',
         name: 'aws',
+        orthancUrl: 'http://localhost:8899',
         wadoUriRoot: 'https://d33do7qe4w26qo.cloudfront.net/dicomweb',
         qidoRoot: 'https://d33do7qe4w26qo.cloudfront.net/dicomweb',
         wadoRoot: 'https://d33do7qe4w26qo.cloudfront.net/dicomweb',

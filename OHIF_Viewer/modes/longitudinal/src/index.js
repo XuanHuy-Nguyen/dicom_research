@@ -117,7 +117,7 @@ function modeFactory({ modeConfiguration }) {
         'MeasurementTools',
         'Zoom',
         'Download',
-        'SendPacs',
+        // 'SendPacs',
         'WindowLevel',
         'Pan',
         'Capture',

@@ -20,6 +20,7 @@ window.config = {
       configuration: {
         friendlyName: 'Orthanc Server',
         name: 'Orthanc',
+        orthancUrl: 'http://localhost:8899',
         wadoUriRoot: 'http://localhost:8899/wado',
         qidoRoot: 'http://localhost:8899/dicom-web',
         wadoRoot: 'http://localhost:8899/dicom-web',
@@ -27,7 +28,7 @@ window.config = {
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         omitQuotationForMultipartRequest: true,
-		dicomUploadEnabled: true,
+        dicomUploadEnabled: true,
       },
     },
     {
