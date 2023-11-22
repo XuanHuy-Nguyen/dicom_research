@@ -417,17 +417,12 @@ function commandsModule({
           const orthancStudyId = studies[0].ID;
           const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
 
-          // Download
-          const download_response = await fetch(`${orthancUrl}/studies/${orthancStudyId}/archive`);
-          const blob = await download_response.blob();
-
-          // Pseudo click download
-          const url = URL.createObjectURL(blob);
+          // Download - Pseudo click download
           const a = document.createElement('a');
-          a.href = url;
-          a.download = `${patientName}_${orthancStudyId}.zip`;
+          a.href = `${orthancUrl}/studies/${orthancStudyId}/archive`; // download link
+          a.download = `${patientName}_${orthancStudyId}.zip`; // download file name
           a.click();
-          URL.revokeObjectURL(url);
+          a.remove();
         }
       }
     },
