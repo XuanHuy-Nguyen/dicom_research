@@ -1,6 +1,7 @@
 window.config = {
-  routerBasename: '/',
+  routerBasename: '/ohif',
   showStudyList: true,
+  showBackButton: false,
   extensions: [],
   modes: [],
   // below flag is for performance reasons, but it might not work for all servers
@@ -20,31 +21,16 @@ window.config = {
       configuration: {
         friendlyName: 'Orthanc Server',
         name: 'Orthanc',
-        orthancUrl: 'http://localhost:8044',
-        wadoUriRoot: '/wado',
-        qidoRoot: '/dicom-web',
-        wadoRoot: '/dicom-web',
+        orthancUrl: 'https://emr-api.saigonmec.org/oc-dcweb',
+        wadoUriRoot: 'https://emr-api.saigonmec.org/oc-dcweb/wado',
+        qidoRoot: 'https://emr-api.saigonmec.org/oc-dcweb/dicom-web',
+        wadoRoot: 'https://emr-api.saigonmec.org/oc-dcweb/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         omitQuotationForMultipartRequest: true,
         dicomUploadEnabled: true,
       },
-    },
-    {
-      namespace: '@ohif/extension-default.dataSourcesModule.dicomjson',
-      sourceName: 'dicomjson',
-      configuration: {
-        friendlyName: 'dicom json',
-        name: 'json',
-      },
-    },
-    {
-      namespace: '@ohif/extension-default.dataSourcesModule.dicomlocal',
-      sourceName: 'dicomlocal',
-      configuration: {
-        friendlyName: 'dicom local',
-      },
-    },
+    }
   ],
 };
