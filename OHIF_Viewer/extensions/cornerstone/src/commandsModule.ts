@@ -413,9 +413,18 @@ function commandsModule({
         console.log('studies', studies);
 
         // (0020,000d): StudyInstanceUID. Query by Patient ID => Need to compare the studyID again
-        if (studies && studies.length > 0 && studies[0].ID && studies[0]?.MainDicomTags['0020,000d']?.Value === currentStudyID) {
-          const orthancStudyId = studies[0].ID;
-          const patientName = studies[0].PatientMainDicomTags['0010,0010']?.Value;
+        let findStudy: any = null;
+        if (studies && studies.length > 0) {
+          try {
+            findStudy = studies.find(e => e.MainDicomTags['0020,000d']?.Value === currentStudyID);
+          }
+          catch (err: any) {
+            console.log(err);
+          }
+        }
+        if (findStudy && findStudy.ID) {
+          const orthancStudyId = findStudy.ID;
+          const patientName = findStudy.PatientMainDicomTags['0010,0010']?.Value;
 
           // Download - Pseudo click download
           const a = document.createElement('a');
