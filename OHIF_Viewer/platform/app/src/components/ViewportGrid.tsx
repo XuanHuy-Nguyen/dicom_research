@@ -233,8 +233,72 @@ function ViewerViewportGrid(props) {
     const viewportPanes = [];
 
     const numViewportPanes = viewportGridService.getNumViewportPanes();
+
+    // ---------------- Custom ----------------------
+    console.log('numViewportPanes', numViewportPanes);
+    console.log('viewports', viewports.values());
+    console.log('viewportComponents', viewportComponents);
+
+    // Update viewports position
+    const viewportsArr = Array.from(viewports.values());
+    if (numViewportPanes > 1) {
+      for (let i = 0; i < numViewportPanes; i++) {
+        const paneMetadata = viewportsArr[i] || {};
+        const {
+          displaySetInstanceUIDs,
+          viewportOptions,
+          displaySetOptions, // array of options for each display set in the viewport
+          x: viewportX,
+          y: viewportY,
+          width: viewportWidth,
+          height: viewportHeight,
+          viewportLabel,
+        } = paneMetadata;
+
+        const displaySetInstanceUIDsToUse = displaySetInstanceUIDs || [];
+        const displaySets = displaySetInstanceUIDsToUse
+          .map(displaySetInstanceUID => {
+            return displaySetService.getDisplaySetByUID(displaySetInstanceUID) || {};
+          })
+          .filter(displaySet => {
+            return !displaySet?.unsupported;
+          });
+
+        console.log('displaySets', displaySets);
+        // Update view port positions
+        if (displaySets.length > 0) {
+          const displaySet = displaySets[0]; // TODO: Not sure about this
+          if (displaySet?.SeriesDescription) {
+            if (displaySet.SeriesDescription === 'R MLO' || displaySet.SeriesDescription === 'MLO R') {
+              viewportsArr[i].positionId = '0-0';
+              viewportsArr[i].x = 0;
+              viewportsArr[i].y = 0;
+              viewportsArr[i].translation = [0, 1];
+            }
+            else if (displaySet.SeriesDescription === 'L MLO' || displaySet.SeriesDescription === 'MLO L') {
+              viewportsArr[i].positionId = '1-0';
+              viewportsArr[i].x = 1 / numCols;
+              viewportsArr[i].y = 0;
+            }
+            else if (displaySet.SeriesDescription === 'R CC' || displaySet.SeriesDescription === 'CC R') {
+              viewportsArr[i].positionId = '0-1';
+              viewportsArr[i].x = 0;
+              viewportsArr[i].y = 1 / numRows;
+            }
+            else if (displaySet.SeriesDescription === 'L CC' || displaySet.SeriesDescription === 'CC L') {
+              viewportsArr[i].positionId = '1-1';
+              viewportsArr[i].x = 1 / numCols;
+              viewportsArr[i].y = 1 / numRows;
+            }
+          }
+        }
+      }
+    }
+
+    // // ---------------- End Custom ----------------------
+
     for (let i = 0; i < numViewportPanes; i++) {
-      const paneMetadata = Array.from(viewports.values())[i] || {};
+      const paneMetadata = viewportsArr[i] || {};
       const {
         displaySetInstanceUIDs,
         viewportOptions,
@@ -245,6 +309,8 @@ function ViewerViewportGrid(props) {
         height: viewportHeight,
         viewportLabel,
       } = paneMetadata;
+
+      // console.log('paneMetadata', paneMetadata);
 
       const viewportId = viewportOptions.viewportId;
       const isActive = activeViewportId === viewportId;

@@ -20,7 +20,7 @@ window.config = {
       configuration: {
         friendlyName: 'Orthanc Server',
         name: 'Orthanc',
-        orthancUrl: 'http://localhost:8044',
+        orthancUrl: 'http://localhost:8042',
         wadoUriRoot: '/wado',
         qidoRoot: '/dicom-web',
         wadoRoot: '/dicom-web',
