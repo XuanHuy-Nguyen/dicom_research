@@ -268,30 +268,32 @@ function ViewerViewportGrid(props) {
         // Update view port positions
         if (displaySets.length > 0) {
           const displaySet = displaySets[0]; // TODO: Not sure about this
-          if (displaySet?.SeriesDescription) {
-            if (displaySet.SeriesDescription === 'R MLO' || displaySet.SeriesDescription === 'MLO R') {
+          if (displaySet?.instance) {
+            // if (displaySet.SeriesDescription === 'R MLO' || displaySet.SeriesDescription === 'MLO R') {
+            if (displaySet.instance?.ImageLaterality === 'R' && displaySet.instance?.ViewPosition === 'MLO') {
               viewportsArr[i].positionId = '0-0';
               viewportsArr[i].x = 0;
               viewportsArr[i].y = 0;
               viewportsArr[i].translation = [0, 1];
             }
-            else if (displaySet.SeriesDescription === 'L MLO' || displaySet.SeriesDescription === 'MLO L') {
+            else if (displaySet.instance?.ImageLaterality === 'L' && displaySet.instance?.ViewPosition === 'MLO') {
               viewportsArr[i].positionId = '1-0';
               viewportsArr[i].x = 1 / numCols;
               viewportsArr[i].y = 0;
             }
-            else if (displaySet.SeriesDescription === 'R CC' || displaySet.SeriesDescription === 'CC R') {
+            else if (displaySet.instance?.ImageLaterality === 'R' && displaySet.instance?.ViewPosition === 'CC') {
               viewportsArr[i].positionId = '0-1';
               viewportsArr[i].x = 0;
               viewportsArr[i].y = 1 / numRows;
             }
-            else if (displaySet.SeriesDescription === 'L CC' || displaySet.SeriesDescription === 'CC L') {
+            else if (displaySet.instance?.ImageLaterality === 'L' && displaySet.instance?.ViewPosition === 'CC') {
               viewportsArr[i].positionId = '1-1';
               viewportsArr[i].x = 1 / numCols;
               viewportsArr[i].y = 1 / numRows;
             }
           }
         }
+        console.log('viewportsArr', viewportsArr);
       }
     }
 
