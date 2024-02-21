@@ -21,6 +21,7 @@
     "build": "lerna run build:viewer --stream",
 	"build:custom": "lerna run build:viewer:custom --stream",
     "build:dev": "lerna run build:dev --stream",
+	"build:dev:dicomjson": "lerna run build:dev:dicomjson --stream",
 	"build:prod": "lerna run build:prod --stream",
     "build:ci": "lerna run build:viewer:ci --stream",
     "build:qa": "lerna run build:viewer:qa --stream",

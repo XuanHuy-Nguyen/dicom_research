@@ -70,15 +70,31 @@ function WorkList({
 
   useEffect(() => {
     window.addEventListener("message", handleRedirectMessage);
+    postLoadSuccessMessage();
+
+    // unmount
     return () => window.removeEventListener("message", handleRedirectMessage);
   }, []);
 
   const handleRedirectMessage = (e: MessageEvent) => {
     if (e.data.studyInstanceUIDs) {
       console.log('handleRedirectMessage WorkList');
-      console.log('Navigate url: ', `/viewer?StudyInstanceUIDs=${e.data.studyInstanceUIDs}`);
+      console.log('Navigate url: ', `/viewer?StudyInstanceUIDs=${e.data.StudyInstanceUIDs}`);
       navigate(`/viewer?StudyInstanceUIDs=${e.data.studyInstanceUIDs}`);
     }
+    else if (e.data?.receiver === 'OHIF' && e.data.msgData.dicomjson) {
+      navigate(`/viewer/dicomjson?url=${e.data.msgData.dicomjson}`);
+    }
+  }
+
+  const postLoadSuccessMessage = () => {
+    const msgData = {
+      receiver: 'EMR',
+      msgData: {
+        loadStatus: true
+      }
+    };
+    window.parent.postMessage(msgData, '*');
   }
 
   /*
