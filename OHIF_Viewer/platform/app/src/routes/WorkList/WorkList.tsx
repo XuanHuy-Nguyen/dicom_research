@@ -78,7 +78,7 @@ function WorkList({
 
   const handleRedirectMessage = (e: MessageEvent) => {
     if (e.data?.receiver === 'OHIF' && e.data.msgData.studyInstanceUIDs) {
-      navigate(`/viewer?StudyInstanceUIDs=${e.data.studyInstanceUIDs}`);
+      navigate(`/viewer?StudyInstanceUIDs=${e.data.msgData.studyInstanceUIDs}`);
     }
     else if (e.data?.receiver === 'OHIF' && e.data.msgData.dicomjson) {
       navigate(`/viewer/dicomjson?url=${e.data.msgData.dicomjson}`);
